@@ -1224,6 +1224,73 @@ static const char regnames_LO[][4] = {
     "LO0", "LO1", "LO2", "LO3",
 };
 
+/*
+** Include useful headers and defines
+*/
+#ifdef HAS_TRACEWRAP
+#include <frame_arch.h>
+#endif // HAS_TRACEWRAP
+
+static inline void gen_trace_newframe(uint64_t pc) {
+#ifdef HAS_TRACEWRAP
+
+    // create new traceframe
+    TCGv_i64 _pc = tcg_const_i64(pc);
+    gen_helper_trace_newframe(_pc);
+    tcg_temp_free_i64(_pc);
+
+    // get machine type
+#ifdef TARGET_MIPS64
+    TCGv_ptr mt = tcg_const_ptr(FRAME_MODE_MIPS64); // TODO: Check this
+#else
+    TCGv_ptr mt = tcg_const_ptr(FRAME_MODE_MIPS);
+#endif // TARGET_MIPS64
+
+    // set trace mode to mips64 or mips
+    gen_helper_trace_mode(mt);
+    tcg_trace_free_ptr(mt);
+
+#endif // HAS_TRACEWRAP
+}
+
+static inline void gen_trace_endframe(uint64_t pc) {
+#ifdef HAS_TRACEWRAP
+    TCGv_i64 _pc = tcg_const_i64(pc);
+    gen_helper_trace_endframe(cpu_env, _pc);
+    tcg_temp_free_i64(_pc);
+
+#endif // HAS_TRACEWRAP
+}
+
+static void gen_trace_load_reg(int reg, TCGv var) {
+#ifdef HAS_TRACEWRAP
+
+    TCGv_i32 r = tcg_const_i32(reg);
+#ifdef TARGET_MIPS64
+    gen_helper_trace_load_reg64(r, var);
+#else
+    gen_helper_trace_load_reg(r, var);
+#endif
+    tcg_temp_free_i32(r);
+
+#endif // HAS_TRACEWRAP
+}
+
+static void gen_trace_store_reg(int reg, TCGv var) {
+#ifdef HAS_TRACEWRAP
+
+    TCGv_i32 r = tcg_const_i32(reg);
+#ifdef TARGET_PPC64
+    gen_helper_trace_store_reg64(r, var);
+#else
+    gen_helper_trace_store_reg(r, var);
+#endif
+    tcg_temp_free_i32(r);
+
+#endif // HAS_TRACEWRAP
+}
+
+
 /* General purpose registers moves. */
 void gen_load_gpr(TCGv t, int reg)
 {
@@ -1232,6 +1299,8 @@ void gen_load_gpr(TCGv t, int reg)
     } else {
         tcg_gen_mov_tl(t, cpu_gpr[reg]);
     }
+
+    gen_trace_load_reg(reg, t);
 }
 
 void gen_store_gpr(TCGv t, int reg)
@@ -1239,6 +1308,8 @@ void gen_store_gpr(TCGv t, int reg)
     if (reg != 0) {
         tcg_gen_mov_tl(cpu_gpr[reg], t);
     }
+
+    gen_trace_store_reg(reg, t);
 }
 
 #if defined(TARGET_MIPS64)
@@ -1249,6 +1320,10 @@ void gen_load_gpr_hi(TCGv_i64 t, int reg)
     } else {
         tcg_gen_mov_i64(t, cpu_gpr_hi[reg]);
     }
+
+    #ifdef HAS_TRACEWRAP
+    gen_trace_load_reg(reg, t);
+    #endif
 }
 
 void gen_store_gpr_hi(TCGv_i64 t, int reg)
@@ -1256,6 +1331,10 @@ void gen_store_gpr_hi(TCGv_i64 t, int reg)
     if (reg != 0) {
         tcg_gen_mov_i64(cpu_gpr_hi[reg], t);
     }
+
+    #ifdef HAS_TRACEWRAP
+    gen_trace_store_reg(reg, t);
+    #endif
 }
 #endif /* TARGET_MIPS64 */
 
@@ -1264,6 +1343,7 @@ static inline void gen_load_srsgpr(int from, int to)
 {
     TCGv t0 = tcg_temp_new();
 
+    // if from == r0 then just move 0
     if (from == 0) {
         tcg_gen_movi_tl(t0, 0);
     } else {
@@ -1283,6 +1363,8 @@ static inline void gen_load_srsgpr(int from, int to)
     }
     gen_store_gpr(t0, to);
     tcg_temp_free(t0);
+
+    #ifdef H
 }
 
 static inline void gen_store_srsgpr(int from, int to)
@@ -16033,19 +16115,24 @@ static void mips_tr_translate_insn(DisasContextBase *dcbase, CPUState *cs)
     int insn_bytes;
     int is_slot;
 
+    // get pc_next and start generating new traceframe
+    uint64_t pc_next = ctx->base.px_next;
+    gen_trace_newframe(pc_next);
+
+    // translate depending on architecture
     is_slot = ctx->hflags & MIPS_HFLAG_BMASK;
     if (ctx->insn_flags & ISA_NANOMIPS32) {
-        ctx->opcode = translator_lduw(env, &ctx->base, ctx->base.pc_next);
+        ctx->opcode = translator_lduw(env, &ctx->base, pc_next);
         insn_bytes = decode_isa_nanomips(env, ctx);
     } else if (!(ctx->hflags & MIPS_HFLAG_M16)) {
-        ctx->opcode = translator_ldl(env, &ctx->base, ctx->base.pc_next);
+        ctx->opcode = translator_ldl(env, &ctx->base, pc_next);
         insn_bytes = 4;
         decode_opc(env, ctx);
     } else if (ctx->insn_flags & ASE_MICROMIPS) {
-        ctx->opcode = translator_lduw(env, &ctx->base, ctx->base.pc_next);
+        ctx->opcode = translator_lduw(env, &ctx->base, pc_next);
         insn_bytes = decode_isa_micromips(env, ctx);
     } else if (ctx->insn_flags & ASE_MIPS16) {
-        ctx->opcode = translator_lduw(env, &ctx->base, ctx->base.pc_next);
+        ctx->opcode = translator_lduw(env, &ctx->base, pc_next);
         insn_bytes = decode_ase_mips16e(env, ctx);
     } else {
         gen_reserved_instruction(ctx);
@@ -16074,7 +16161,11 @@ static void mips_tr_translate_insn(DisasContextBase *dcbase, CPUState *cs)
     if (is_slot) {
         gen_branch(ctx, insn_bytes);
     }
+
+    // update pc for next instruction
+    // and get pc_next
     ctx->base.pc_next += insn_bytes;
+    pc_next = ctx->base.pc_next;
 
     if (ctx->base.is_jmp != DISAS_NEXT) {
         return;
@@ -16085,10 +16176,13 @@ static void mips_tr_translate_insn(DisasContextBase *dcbase, CPUState *cs)
      * See mips_tr_init_disas_context about single-stepping a branch
      * together with its delay slot.
      */
-    if (ctx->base.pc_next - ctx->page_start >= TARGET_PAGE_SIZE
+    if (pc_next - ctx->page_start >= TARGET_PAGE_SIZE
         && !ctx->base.singlestep_enabled) {
         ctx->base.is_jmp = DISAS_TOO_MANY;
     }
+
+    // end the frame
+    gen_pc_endframe(pc_next);
 }
 
 static void mips_tr_tb_stop(DisasContextBase *dcbase, CPUState *cs)

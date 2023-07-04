@@ -10,15 +10,25 @@ static const int reg_max = sizeof(regs) / sizeof(regs[0]);
 
 void HELPER(trace_newframe)(target_ulong pc)
 {
-	qemu_trace_newframe(pc, 0);
+    qemu_trace_newframe(pc, 0);
 }
 
 void HELPER(trace_endframe)(CPUMIPSState *env, target_ulong old_pc, uint32_t size)
 {
-	qemu_trace_endframe(env, old_pc, size);
+    qemu_trace_endframe(env, old_pc, size);
 }
 
-OperandInfo * load_store_reg(uint32_t reg, uint32_t val, int ls)
+/**
+ * Load/Store a value from/to a register
+ *
+ * @param reg is index into the @c regs array declared at top
+ * @param val is value to be stored
+ * @param len is length (size) in bytes of val
+ * @param ls if 0 means this is a LOAD operation, otherwise STORE operation
+ *
+ * @return OperandInfo
+ * */
+OperandInfo * load_store_reg(uint32_t reg, uint64_t val, size_t len, int ls)
 {
     RegOperand * ro = g_new(RegOperand,1);
     reg_operand__init(ro);
@@ -27,6 +37,7 @@ OperandInfo * load_store_reg(uint32_t reg, uint32_t val, int ls)
     OperandInfoSpecific *ois = g_new(OperandInfoSpecific,1);
     operand_info_specific__init(ois);
     ois->reg_operand = ro;
+
     OperandUsage *ou = g_new(OperandUsage,1);
     operand_usage__init(ou);
     if (ls == 0)
@@ -35,34 +46,53 @@ OperandInfo * load_store_reg(uint32_t reg, uint32_t val, int ls)
     } else {
         ou->written = 1;
     }
+
     OperandInfo *oi = g_new(OperandInfo,1);
     operand_info__init(oi);
     oi->bit_length = 0;
     oi->operand_info_specific = ois;
     oi->operand_usage = ou;
-    oi->value.len = 4;
+    oi->value.len = len;
     oi->value.data = g_malloc(oi->value.len);
-    memcpy(oi->value.data, &val, 4);
+
+    // if reg == 0 (means r0), it should always read 0
+    if(reg == 0) {
+        memset(oi->value.data, 0, sizeof(val));
+    } else {
+        memcpy(oi->value.data, &val, len);
+    }
+
     return oi;
 }
 
-void HELPER(trace_load_reg)(uint32_t reg, uint32_t val)
+#define LOAD_REG(reg, val)                                              \
+    qemu_log("Read from (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);       \
+    OperandInfo *oi = load_store_reg(reg, val, sizeof(val),  0);        \
+    qemu_trace_add_operand(oi, 0x1)
+
+#define STORE_REG(reg, val)                                             \
+    qemu_log("Write into (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);     \
+    OperandInfo *oi = load_store_reg(reg, val, sizeof(val), 1);         \
+    qemu_trace_add_operand(oi, 0x2)
+
+void HELPER(trace_load_reg32)(uint32_t reg, uint32_t val)
 {
-    qemu_log("This register (r%d) was read. Value 0x%x\n", reg, val);
-
-    //r0 always reads 0
-    OperandInfo *oi = load_store_reg(reg, (reg != 0) ? val : 0, 0);
-
-    qemu_trace_add_operand(oi, 0x1);
+    LOAD_REG(reg, val);
 }
 
-void HELPER(trace_store_reg)(uint32_t reg, uint32_t val)
+void HELPER(trace_store_reg32)(uint32_t reg, uint32_t val)
 {
-    qemu_log("This register (r%d) was written. Value: 0x%x\n", reg, val);
+    STORE_REG(val, val);
+}
 
-    OperandInfo *oi = load_store_reg(reg, val, 1);
+void HELPER(trace_load_reg64)(uint32_t reg, uint64_t val)
+{
+    LOAD_REG(reg, val);
+}
 
-    qemu_trace_add_operand(oi, 0x2);
+void HELPER(trace_store_reg64)(uint32_t reg, uint64_t val)
+{
+    STORE_REG(reg, val);
 }
 
 //void HELPER(trace_load_eflags)(CPUMIPSState *env)
@@ -80,17 +110,28 @@ void HELPER(trace_store_reg)(uint32_t reg, uint32_t val)
 //}
 //
 
-// TODO: signature has changed, see arm
-OperandInfo * load_store_mem(uint32_t addr, uint32_t val, int ls, int len) {
+/**
+ * Load/Store a value from/to a memory region
+ *
+ * @param addr is address of memory region
+ * @param val is value to be stored
+ * @param len is length (size) in bytes of val
+ * @param ls if 0 means this is a LOAD operation, otherwise STORE operation
+ *
+ * @return OperandInfo
+ * */
+OperandInfo * load_store_mem(uint64_t addr, const void *memptr, int ls, int len) {
+    // create new memory operand
     MemOperand * mo = g_new(MemOperand,1);
     mem_operand__init(mo);
-
     mo->address = addr;
 
+    // reg operand? memory operand?
     OperandInfoSpecific *ois = g_new(OperandInfoSpecific,1);
     operand_info_specific__init(ois);
     ois->mem_operand = mo;
 
+    // did we just wrote a value or read value?
     OperandUsage *ou = g_new(OperandUsage,1);
     operand_usage__init(ou);
     if (ls == 0) {
@@ -98,6 +139,8 @@ OperandInfo * load_store_mem(uint32_t addr, uint32_t val, int ls, int len) {
     } else {
         ou->written = 1;
     }
+
+    // sum up all information
     OperandInfo *oi = g_new(OperandInfo,1);
     operand_info__init(oi);
     oi->bit_length = len*8;
@@ -105,25 +148,25 @@ OperandInfo * load_store_mem(uint32_t addr, uint32_t val, int ls, int len) {
     oi->operand_usage = ou;
     oi->value.len = len;
     oi->value.data = g_malloc(oi->value.len);
-    memcpy(oi->value.data, &val, len);
+    memcpy(oi->value.data, memptr, len);
 
     return oi;
 }
 
-void HELPER(trace_ld)(CPUMIPSState *env, uint32_t val, uint32_t addr)
-{
-    qemu_log("This was a read 0x%x addr:0x%x value:0x%x\n", env->active_tc.PC, addr, val);
+// TODO : create load/store_mem, u and i, 32 and i64
 
-    OperandInfo *oi = load_store_mem(addr, val, 0, 4);
+#define LOAD_MEM(addr, data)                                            \
+    qemu_log("Read at addr=0x%x, val=0x%x\n", addr, data);              \
+    OperandInfo *oi = load_store_mem(addr, &data, 0, sizeof(data));     \
+    qemu_trace_add_operand(oi, 0x1)
 
-    qemu_trace_add_operand(oi, 0x1);
-}
+#define STORE_MEM(addr, data)                                           \
+    qemu_log("Write at addr=0x%x, val=0x%x\n", addr, data);             \
+    OperandInfo *oi = load_store_mem(addr, &data, 1, sizeof(data));     \
+    qemu_trace_add_operand(oi, 0x1)
 
-void HELPER(trace_st)(CPUMIPSState *env, uint32_t val, uint32_t addr)
-{
-    qemu_log("This was a store 0x%x addr:0x%x value:0x%x\n", env->active_tc.PC, addr, val);
+void HELPER(trace_load_mem32)(uint64_t  addr, uint32_t val) { LOAD_MEM(addr, val); }
+void HELPER(trace_load_mem64)(uint64_t  addr, uint64_t val) { LOAD_MEM(addr, val); }
 
-    OperandInfo *oi = load_store_mem(addr, val, 1, 4);
-
-    qemu_trace_add_operand(oi, 0x2);
-}
+void HELPER(trace_store_mem32)(uint64_t addr, uint32_t val) { STORE_MEM(addr, val); }
+void HELPER(trace_store_mem64)(uint64_t addr, uint64_t val) { STORE_MEM(addr, val); }
