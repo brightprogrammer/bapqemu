@@ -226,8 +226,8 @@ void qdict_array_split(QDict *src, QList **dst)
         bool is_subqdict;
         QDict *subqdict = NULL;
         char indexstr[32], prefix[32];
-        size_t snprintf_ret;
 
+        size_t snprintf_ret;
         snprintf_ret = snprintf(indexstr, 32, "%u", i);
         assert(snprintf_ret < 32);
 

@@ -1,0 +1,343 @@
+changing dir to build for make ""...
+make[1]: Entering directory '/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/build'
+  GIT     ui/keycodemapdb tests/fp/berkeley-testfloat-3 tests/fp/berkeley-softfloat-3 dtc capstone slirp
+[1/576] Compiling C object tests/fp/libtestfloat.a.p/berkeley-testfloat-3_source_test_a_f16_z_ui64_rx.c.o
+[2/576] Compiling C object tests/fp/libtestfloat.a.p/berkeley-testfloat-3_source_test_a_f16_z_i64_rx.c.o
+[3/576] Compiling C object tests/fp/libtestfloat.a.p/berkeley-testfloat-3_source_test_a_f16_z_i32_rx.c.o
+[4/576] Generating qemu-version.h with a custom command (wrapped by meson to capture output)
+[5/576] Compiling C object tests/fp/libtestfloat.a.p/berkeley-testfloat-3_source_test_a_f16_z_ui32_x.c.o
+[6/576] Compiling C object tests/fp/libtestfloat.a.p/berkeley-testfloat-3_source_test_a_f16_z_ui64_x.c.o
+[7/576] Compiling C object tests/fp/libtestfloat.a.p/berkeley-testfloat-3_source_test_a_f16_z_i32_x.c.o
+[8/576] Compiling C object libqemu-mips-linux-user.fa.p/target_mips_trace_helper.c.o
+FAILED: libqemu-mips-linux-user.fa.p/target_mips_trace_helper.c.o 
+cc -m64 -mcx16 -Ilibqemu-mips-linux-user.fa.p -I. -I.. -Itarget/mips -I../target/mips -I../linux-user/host/x86_64 -Ilinux-user -I../linux-user -Ilinux-user/mips -I../linux-user/mips -Iprotobuf -I../protobuf -I/home/brightprogrammer/Work/bap-frames/libtrace/src -Itrace -Iqapi -Iui/shader -I/usr/include/capstone -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/sysprof-4 -fdiagnostics-color=auto -Wall -Winvalid-pch -std=gnu11 -O2 -g -isystem /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/linux-headers -isystem linux-headers -iquote . -iquote /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu -iquote /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include -iquote /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/disas/libvixl -iquote /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/tcg/i386 -pthread -U_FORTIFY_SOURCE -D_FORTIFY_SOURCE=2 -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -Wstrict-prototypes -Wredundant-decls -Wundef -Wwrite-strings -Wmissing-prototypes -fno-strict-aliasing -fno-common -fwrapv -Wold-style-declaration -Wold-style-definition -Wtype-limits -Wformat-security -Wformat-y2k -Winit-self -Wignored-qualifiers -Wempty-body -Wnested-externs -Wendif-labels -Wexpansion-to-defined -Wimplicit-fallthrough=2 -Wno-missing-include-dirs -Wno-shift-negative-value -Wno-psabi -fstack-protector-strong -fPIE -isystem../linux-headers -isystemlinux-headers -DNEED_CPU_H '-DCONFIG_TARGET="mips-linux-user-config-target.h"' '-DCONFIG_DEVICES="mips-linux-user-config-devices.h"' -MD -MQ libqemu-mips-linux-user.fa.p/target_mips_trace_helper.c.o -MF libqemu-mips-linux-user.fa.p/target_mips_trace_helper.c.o.d -o libqemu-mips-linux-user.fa.p/target_mips_trace_helper.c.o -c ../target/mips/trace_helper.c
+In file included from /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/host-utils.h:33,
+                 from /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/bitops.h:16,
+                 from /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/bitmap.h:16,
+                 from /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/hw/qdev-core.h:5,
+                 from /home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/hw/core/cpu.h:23,
+                 from ../target/mips/cpu-qom.h:23,
+                 from ../target/mips/cpu.h:4,
+                 from ../target/mips/trace_helper.c:3:
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: error: conflicting types for ‘helper_trace_endframe’; have ‘void(CPUMIPSState *, uint64_t)’ {aka ‘void(CPUMIPSState *, long unsigned int)’}
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+../target/mips/trace_helper.c:14:6: note: in expansion of macro ‘HELPER’
+   14 | void HELPER(trace_endframe)(CPUMIPSState *env, uint64_t pc) { qemu_trace_endframe(env, pc, MIPS_INSN_SIZE); }
+      |      ^~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: note: previous declaration of ‘helper_trace_endframe’ with type ‘void(target_ulong,  uint64_t)’ {aka ‘void(unsigned int,  long unsigned int)’}
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-proto.h:16:15: note: in expansion of macro ‘HELPER’
+   16 | dh_ctype(ret) HELPER(name) (dh_ctype(t1), dh_ctype(t2));
+      |               ^~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:123:5: note: in expansion of macro ‘DEF_HELPER_FLAGS_2’
+  123 |     DEF_HELPER_FLAGS_2(name, 0, ret, t1, t2)
+      |     ^~~~~~~~~~~~~~~~~~
+../target/mips/helper.h:21:1: note: in expansion of macro ‘DEF_HELPER_2’
+   21 | DEF_HELPER_2(trace_endframe, void, tl, i64)
+      | ^~~~~~~~~~~~
+../target/mips/trace_helper.c:27:15: error: conflicting types for ‘load_store_reg’; have ‘OperandInfo *(uint32_t,  uint64_t,  size_t,  int)’ {aka ‘OperandInfo *(unsigned int,  long unsigned int,  long unsigned int,  int)’}
+   27 | OperandInfo * load_store_reg(uint32_t reg, uint64_t val, size_t len, int ls)
+      |               ^~~~~~~~~~~~~~
+In file included from ../target/mips/trace_helper.c:4:
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/tracewrap.h:45:15: note: previous declaration of ‘load_store_reg’ with type ‘OperandInfo *(uint32_t,  uint32_t,  int)’ {aka ‘OperandInfo *(unsigned int,  unsigned int,  int)’}
+   45 | OperandInfo * load_store_reg(uint32_t reg, uint32_t val, int ls);
+      |               ^~~~~~~~~~~~~~
+../target/mips/trace_helper.c: In function ‘helper_trace_load_reg32’:
+../target/mips/trace_helper.c:65:14: warning: format ‘%zu’ expects argument of type ‘size_t’, but argument 3 has type ‘uint32_t’ {aka ‘unsigned int’} [-Wformat=]
+   65 |     qemu_log("Read from (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);       \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../target/mips/trace_helper.c:74:61: note: in expansion of macro ‘LOAD_REG’
+   74 | void HELPER(trace_load_reg32)(uint32_t reg, uint32_t val) { LOAD_REG(reg, val); }
+      |                                                             ^~~~~~~~
+../target/mips/trace_helper.c:65:51: note: format string is defined here
+   65 |     qemu_log("Read from (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);       \
+      |                                                 ~~^
+      |                                                   |
+      |                                                   long unsigned int
+      |                                                 %u
+../target/mips/trace_helper.c:65:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 4 has type ‘long unsigned int’ [-Wformat=]
+   65 |     qemu_log("Read from (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);       \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~            ~~~~~~~~~~~~~
+      |                                                                        |
+      |                                                                        long unsigned int
+../target/mips/trace_helper.c:74:61: note: in expansion of macro ‘LOAD_REG’
+   74 | void HELPER(trace_load_reg32)(uint32_t reg, uint32_t val) { LOAD_REG(reg, val); }
+      |                                                             ^~~~~~~~
+../target/mips/trace_helper.c:65:56: note: format string is defined here
+   65 |     qemu_log("Read from (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);       \
+      |                                                       ~^
+      |                                                        |
+      |                                                        unsigned int
+      |                                                       %lx
+../target/mips/trace_helper.c: At top level:
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: warning: no previous prototype for ‘helper_trace_load_reg64’ [-Wmissing-prototypes]
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+../target/mips/trace_helper.c:75:6: note: in expansion of macro ‘HELPER’
+   75 | void HELPER(trace_load_reg64)(uint32_t reg, uint64_t val) { LOAD_REG(reg, val); }
+      |      ^~~~~~
+../target/mips/trace_helper.c: In function ‘helper_trace_load_reg64’:
+../target/mips/trace_helper.c:65:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 4 has type ‘long unsigned int’ [-Wformat=]
+   65 |     qemu_log("Read from (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);       \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~            ~~~~~~~~~~~~~
+      |                                                                        |
+      |                                                                        long unsigned int
+../target/mips/trace_helper.c:75:61: note: in expansion of macro ‘LOAD_REG’
+   75 | void HELPER(trace_load_reg64)(uint32_t reg, uint64_t val) { LOAD_REG(reg, val); }
+      |                                                             ^~~~~~~~
+../target/mips/trace_helper.c:65:56: note: format string is defined here
+   65 |     qemu_log("Read from (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);       \
+      |                                                       ~^
+      |                                                        |
+      |                                                        unsigned int
+      |                                                       %lx
+../target/mips/trace_helper.c: In function ‘helper_trace_store_reg32’:
+../target/mips/trace_helper.c:70:14: warning: format ‘%zu’ expects argument of type ‘size_t’, but argument 3 has type ‘uint32_t’ {aka ‘unsigned int’} [-Wformat=]
+   70 |     qemu_log("Write into (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);     \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../target/mips/trace_helper.c:77:62: note: in expansion of macro ‘STORE_REG’
+   77 | void HELPER(trace_store_reg32)(uint32_t reg, uint32_t val) { STORE_REG(val, val); }
+      |                                                              ^~~~~~~~~
+../target/mips/trace_helper.c:70:52: note: format string is defined here
+   70 |     qemu_log("Write into (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);     \
+      |                                                  ~~^
+      |                                                    |
+      |                                                    long unsigned int
+      |                                                  %u
+../target/mips/trace_helper.c:70:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 4 has type ‘long unsigned int’ [-Wformat=]
+   70 |     qemu_log("Write into (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);     \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~            ~~~~~~~~~~~~~
+      |                                                                         |
+      |                                                                         long unsigned int
+../target/mips/trace_helper.c:77:62: note: in expansion of macro ‘STORE_REG’
+   77 | void HELPER(trace_store_reg32)(uint32_t reg, uint32_t val) { STORE_REG(val, val); }
+      |                                                              ^~~~~~~~~
+../target/mips/trace_helper.c:70:57: note: format string is defined here
+   70 |     qemu_log("Write into (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);     \
+      |                                                        ~^
+      |                                                         |
+      |                                                         unsigned int
+      |                                                        %lx
+../target/mips/trace_helper.c: At top level:
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: warning: no previous prototype for ‘helper_trace_store_reg64’ [-Wmissing-prototypes]
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+../target/mips/trace_helper.c:78:6: note: in expansion of macro ‘HELPER’
+   78 | void HELPER(trace_store_reg64)(uint32_t reg, uint64_t val) { STORE_REG(reg, val); }
+      |      ^~~~~~
+../target/mips/trace_helper.c: In function ‘helper_trace_store_reg64’:
+../target/mips/trace_helper.c:70:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 4 has type ‘long unsigned int’ [-Wformat=]
+   70 |     qemu_log("Write into (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);     \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~            ~~~~~~~~~~~~~
+      |                                                                         |
+      |                                                                         long unsigned int
+../target/mips/trace_helper.c:78:62: note: in expansion of macro ‘STORE_REG’
+   78 | void HELPER(trace_store_reg64)(uint32_t reg, uint64_t val) { STORE_REG(reg, val); }
+      |                                                              ^~~~~~~~~
+../target/mips/trace_helper.c:70:57: note: format string is defined here
+   70 |     qemu_log("Write into (r%d) register. Val = (u%zu)0x%x\n", reg, val, sizeof(val)*8);     \
+      |                                                        ~^
+      |                                                         |
+      |                                                         unsigned int
+      |                                                        %lx
+../target/mips/trace_helper.c: At top level:
+../target/mips/trace_helper.c:90:15: error: conflicting types for ‘load_store_mem’; have ‘OperandInfo *(uint64_t,  const void *, int,  int)’ {aka ‘OperandInfo *(long unsigned int,  const void *, int,  int)’}
+   90 | OperandInfo * load_store_mem(uint64_t addr, const void *memptr, int ls, int len) {
+      |               ^~~~~~~~~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/tracewrap.h:47:15: note: previous declaration of ‘load_store_mem’ with type ‘OperandInfo *(uint64_t,  int,  const void *, size_t)’ {aka ‘OperandInfo *(long unsigned int,  int,  const void *, long unsigned int)’}
+   47 | OperandInfo * load_store_mem(uint64_t addr, int ls, const void *data, size_t data_size);
+      |               ^~~~~~~~~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: error: conflicting types for ‘helper_trace_load_mem32’; have ‘void(uint64_t,  uint32_t)’ {aka ‘void(long unsigned int,  unsigned int)’}
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+../target/mips/trace_helper.c:135:6: note: in expansion of macro ‘HELPER’
+  135 | void HELPER(trace_load_mem32)(uint64_t  addr, uint32_t val) { LOAD_MEM(addr, val); }
+      |      ^~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: note: previous declaration of ‘helper_trace_load_mem32’ with type ‘void(uint32_t,  uint32_t)’ {aka ‘void(unsigned int,  unsigned int)’}
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-proto.h:16:15: note: in expansion of macro ‘HELPER’
+   16 | dh_ctype(ret) HELPER(name) (dh_ctype(t1), dh_ctype(t2));
+      |               ^~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:123:5: note: in expansion of macro ‘DEF_HELPER_FLAGS_2’
+  123 |     DEF_HELPER_FLAGS_2(name, 0, ret, t1, t2)
+      |     ^~~~~~~~~~~~~~~~~~
+../target/mips/helper.h:25:1: note: in expansion of macro ‘DEF_HELPER_2’
+   25 | DEF_HELPER_2(trace_load_mem32, void, i32, i32)
+      | ^~~~~~~~~~~~
+../target/mips/trace_helper.c: In function ‘helper_trace_load_mem32’:
+../target/mips/trace_helper.c:126:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  126 |     qemu_log("Read at addr=0x%x, val=0x%x\n", addr, data);              \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../target/mips/trace_helper.c:135:63: note: in expansion of macro ‘LOAD_MEM’
+  135 | void HELPER(trace_load_mem32)(uint64_t  addr, uint32_t val) { LOAD_MEM(addr, val); }
+      |                                                               ^~~~~~~~
+../target/mips/trace_helper.c:126:31: note: format string is defined here
+  126 |     qemu_log("Read at addr=0x%x, val=0x%x\n", addr, data);              \
+      |                              ~^
+      |                               |
+      |                               unsigned int
+      |                              %lx
+../target/mips/trace_helper.c: At top level:
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: warning: no previous prototype for ‘helper_trace_load_mem64’ [-Wmissing-prototypes]
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+../target/mips/trace_helper.c:136:6: note: in expansion of macro ‘HELPER’
+  136 | void HELPER(trace_load_mem64)(uint64_t  addr, uint64_t val) { LOAD_MEM(addr, val); }
+      |      ^~~~~~
+../target/mips/trace_helper.c: In function ‘helper_trace_load_mem64’:
+../target/mips/trace_helper.c:126:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  126 |     qemu_log("Read at addr=0x%x, val=0x%x\n", addr, data);              \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../target/mips/trace_helper.c:136:63: note: in expansion of macro ‘LOAD_MEM’
+  136 | void HELPER(trace_load_mem64)(uint64_t  addr, uint64_t val) { LOAD_MEM(addr, val); }
+      |                                                               ^~~~~~~~
+../target/mips/trace_helper.c:126:31: note: format string is defined here
+  126 |     qemu_log("Read at addr=0x%x, val=0x%x\n", addr, data);              \
+      |                              ~^
+      |                               |
+      |                               unsigned int
+      |                              %lx
+../target/mips/trace_helper.c:126:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 3 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  126 |     qemu_log("Read at addr=0x%x, val=0x%x\n", addr, data);              \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../target/mips/trace_helper.c:136:63: note: in expansion of macro ‘LOAD_MEM’
+  136 | void HELPER(trace_load_mem64)(uint64_t  addr, uint64_t val) { LOAD_MEM(addr, val); }
+      |                                                               ^~~~~~~~
+../target/mips/trace_helper.c:126:41: note: format string is defined here
+  126 |     qemu_log("Read at addr=0x%x, val=0x%x\n", addr, data);              \
+      |                                        ~^
+      |                                         |
+      |                                         unsigned int
+      |                                        %lx
+../target/mips/trace_helper.c: At top level:
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: error: conflicting types for ‘helper_trace_store_mem32’; have ‘void(uint64_t,  uint32_t)’ {aka ‘void(long unsigned int,  unsigned int)’}
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+../target/mips/trace_helper.c:138:6: note: in expansion of macro ‘HELPER’
+  138 | void HELPER(trace_store_mem32)(uint64_t addr, uint32_t val) { STORE_MEM(addr, val); }
+      |      ^~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: note: previous declaration of ‘helper_trace_store_mem32’ with type ‘void(uint32_t,  uint32_t)’ {aka ‘void(unsigned int,  unsigned int)’}
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-proto.h:16:15: note: in expansion of macro ‘HELPER’
+   16 | dh_ctype(ret) HELPER(name) (dh_ctype(t1), dh_ctype(t2));
+      |               ^~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:123:5: note: in expansion of macro ‘DEF_HELPER_FLAGS_2’
+  123 |     DEF_HELPER_FLAGS_2(name, 0, ret, t1, t2)
+      |     ^~~~~~~~~~~~~~~~~~
+../target/mips/helper.h:26:1: note: in expansion of macro ‘DEF_HELPER_2’
+   26 | DEF_HELPER_2(trace_store_mem32, void, i32, i32)
+      | ^~~~~~~~~~~~
+../target/mips/trace_helper.c: In function ‘helper_trace_store_mem32’:
+../target/mips/trace_helper.c:131:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  131 |     qemu_log("Write at addr=0x%x, val=0x%x\n", addr, data);             \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../target/mips/trace_helper.c:138:63: note: in expansion of macro ‘STORE_MEM’
+  138 | void HELPER(trace_store_mem32)(uint64_t addr, uint32_t val) { STORE_MEM(addr, val); }
+      |                                                               ^~~~~~~~~
+../target/mips/trace_helper.c:131:32: note: format string is defined here
+  131 |     qemu_log("Write at addr=0x%x, val=0x%x\n", addr, data);             \
+      |                               ~^
+      |                                |
+      |                                unsigned int
+      |                               %lx
+../target/mips/trace_helper.c: At top level:
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:27: warning: no previous prototype for ‘helper_trace_store_mem64’ [-Wmissing-prototypes]
+   21 | #define HELPER(name) glue(helper_, name)
+      |                           ^~~~~~~
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/qemu/compiler.h:35:21: note: in definition of macro ‘xglue’
+   35 | #define xglue(x, y) x ## y
+      |                     ^
+/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/include/exec/helper-head.h:21:22: note: in expansion of macro ‘glue’
+   21 | #define HELPER(name) glue(helper_, name)
+      |                      ^~~~
+../target/mips/trace_helper.c:139:6: note: in expansion of macro ‘HELPER’
+  139 | void HELPER(trace_store_mem64)(uint64_t addr, uint64_t val) { STORE_MEM(addr, val); }
+      |      ^~~~~~
+../target/mips/trace_helper.c: In function ‘helper_trace_store_mem64’:
+../target/mips/trace_helper.c:131:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  131 |     qemu_log("Write at addr=0x%x, val=0x%x\n", addr, data);             \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../target/mips/trace_helper.c:139:63: note: in expansion of macro ‘STORE_MEM’
+  139 | void HELPER(trace_store_mem64)(uint64_t addr, uint64_t val) { STORE_MEM(addr, val); }
+      |                                                               ^~~~~~~~~
+../target/mips/trace_helper.c:131:32: note: format string is defined here
+  131 |     qemu_log("Write at addr=0x%x, val=0x%x\n", addr, data);             \
+      |                               ~^
+      |                                |
+      |                                unsigned int
+      |                               %lx
+../target/mips/trace_helper.c:131:14: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 3 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  131 |     qemu_log("Write at addr=0x%x, val=0x%x\n", addr, data);             \
+      |              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+../target/mips/trace_helper.c:139:63: note: in expansion of macro ‘STORE_MEM’
+  139 | void HELPER(trace_store_mem64)(uint64_t addr, uint64_t val) { STORE_MEM(addr, val); }
+      |                                                               ^~~~~~~~~
+../target/mips/trace_helper.c:131:42: note: format string is defined here
+  131 |     qemu_log("Write at addr=0x%x, val=0x%x\n", addr, data);             \
+      |                                         ~^
+      |                                          |
+      |                                          unsigned int
+      |                                         %lx
+[9/576] Compiling C object libqemu-mips-linux-user.fa.p/target_mips_tcg_ldst_helper.c.o
+[10/576] Compiling C object libqemu-mips-linux-user.fa.p/target_mips_tcg_lmmi_helper.c.o
+[11/576] Compiling C object libqemu-mips-linux-user.fa.p/target_mips_tcg_msa_helper.c.o
+ninja: build stopped: subcommand failed.
+make[1]: Leaving directory '/home/brightprogrammer/BigMan/OldFiles/Desktop/Work/bapqemu/build'

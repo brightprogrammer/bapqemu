@@ -1234,21 +1234,21 @@ static const char regnames_LO[][4] = {
 static inline void gen_trace_newframe(uint64_t pc) {
 #ifdef HAS_TRACEWRAP
 
-    // create new traceframe
+    // will contain machine type information
     TCGv_i64 _pc = tcg_const_i64(pc);
     gen_helper_trace_newframe(_pc);
     tcg_temp_free_i64(_pc);
 
-    // get machine type
+    TCGv_ptr mt;
 #ifdef TARGET_MIPS64
-    TCGv_ptr mt = tcg_const_ptr(FRAME_MODE_MIPS64); // TODO: Check this
-#else
-    TCGv_ptr mt = tcg_const_ptr(FRAME_MODE_MIPS);
+    mt = tcg_const_ptr(FRAME_MODE_MIPS64);
+#else // else this is TARGET_MIPS
+    mt = tcg_const_ptr(FRAME_MODE_MIPS);
 #endif // TARGET_MIPS64
 
     // set trace mode to mips64 or mips
     gen_helper_trace_mode(mt);
-    tcg_trace_free_ptr(mt);
+    tcg_temp_free_ptr(mt);
 
 #endif // HAS_TRACEWRAP
 }
@@ -1269,7 +1269,7 @@ static void gen_trace_load_reg(int reg, TCGv var) {
 #ifdef TARGET_MIPS64
     gen_helper_trace_load_reg64(r, var);
 #else
-    gen_helper_trace_load_reg(r, var);
+    gen_helper_trace_load_reg32(r, var);
 #endif
     tcg_temp_free_i32(r);
 
@@ -1280,16 +1280,43 @@ static void gen_trace_store_reg(int reg, TCGv var) {
 #ifdef HAS_TRACEWRAP
 
     TCGv_i32 r = tcg_const_i32(reg);
-#ifdef TARGET_PPC64
+#ifdef TARGET_MIPS64
     gen_helper_trace_store_reg64(r, var);
 #else
-    gen_helper_trace_store_reg(r, var);
+    gen_helper_trace_store_reg32(r, var);
 #endif
     tcg_temp_free_i32(r);
 
 #endif // HAS_TRACEWRAP
 }
 
+static void gen_trace_load_mem(TCGv addr, TCGv val, MemOp op) {
+#ifdef HAS_TRACEWRAP
+
+    TCGv_i32 o = tcg_const_i32(op);
+#ifdef TARGET_MIPS64
+    gen_helper_trace_load_mem64(addr, val, o);
+#else
+    gen_helper_trace_load_mem(addr, val, o);
+#endif
+    tcg_temp_free_i32(o);
+
+#endif // HAS_TRACEWRAP
+}
+
+static void gen_trace_store_mem(TCGv addr, TCGv val, MemOp op) {
+#ifdef HAS_TRACEWRAP
+
+    TCGv_i32 o = tcg_const_i32(op);
+#ifdef TARGET_MIPS64
+    gen_helper_trace_store_mem64(addr, val, o);
+#else
+    gen_helper_trace_store_mem(addr, val, o);
+#endif
+    tcg_temp_free_i32(o);
+
+#endif // HAS_TRACEWRAP
+}
 
 /* General purpose registers moves. */
 void gen_load_gpr(TCGv t, int reg)
@@ -1321,9 +1348,7 @@ void gen_load_gpr_hi(TCGv_i64 t, int reg)
         tcg_gen_mov_i64(t, cpu_gpr_hi[reg]);
     }
 
-    #ifdef HAS_TRACEWRAP
     gen_trace_load_reg(reg, t);
-    #endif
 }
 
 void gen_store_gpr_hi(TCGv_i64 t, int reg)
@@ -1332,9 +1357,7 @@ void gen_store_gpr_hi(TCGv_i64 t, int reg)
         tcg_gen_mov_i64(cpu_gpr_hi[reg], t);
     }
 
-    #ifdef HAS_TRACEWRAP
     gen_trace_store_reg(reg, t);
-    #endif
 }
 #endif /* TARGET_MIPS64 */
 
@@ -1363,8 +1386,6 @@ static inline void gen_load_srsgpr(int from, int to)
     }
     gen_store_gpr(t0, to);
     tcg_temp_free(t0);
-
-    #ifdef H
 }
 
 static inline void gen_store_srsgpr(int from, int to)
@@ -16116,7 +16137,7 @@ static void mips_tr_translate_insn(DisasContextBase *dcbase, CPUState *cs)
     int is_slot;
 
     // get pc_next and start generating new traceframe
-    uint64_t pc_next = ctx->base.px_next;
+    uint64_t pc_next = ctx->base.pc_next;
     gen_trace_newframe(pc_next);
 
     // translate depending on architecture
@@ -16182,7 +16203,7 @@ static void mips_tr_translate_insn(DisasContextBase *dcbase, CPUState *cs)
     }
 
     // end the frame
-    gen_pc_endframe(pc_next);
+    gen_trace_endframe(pc_next);
 }
 
 static void mips_tr_tb_stop(DisasContextBase *dcbase, CPUState *cs)

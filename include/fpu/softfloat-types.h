@@ -80,6 +80,9 @@ this code that are retained.
 #ifndef SOFTFLOAT_TYPES_H
 #define SOFTFLOAT_TYPES_H
 
+#include <stdint.h>
+#include <stdbool.h>
+
 /*
  * Software IEC/IEEE floating-point types.
  */

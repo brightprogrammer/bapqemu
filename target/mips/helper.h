@@ -1,4 +1,4 @@
-DEF_HELPER_3(raise_exception_err, noreturn, env, i32, int)
+DEF_HELPER_3(raise_exception_err, noreturn, env, i32, i32)
 DEF_HELPER_2(raise_exception, noreturn, env, i32)
 DEF_HELPER_1(raise_exception_debug, noreturn, env)
 
@@ -17,17 +17,28 @@ DEF_HELPER_3(lld, tl, env, tl, int)
 #endif
 
 #ifdef HAS_TRACEWRAP
-DEF_HELPER_1(trace_newframe, void, tl)
-DEF_HELPER_3(trace_endframe, void, env, tl, i32)
+// trace being/end
+DEF_HELPER_1(trace_newframe, void, i64)
+DEF_HELPER_2(trace_endframe, void, env, i64)
+DEF_HELPER_1(trace_mode, void, ptr)
+
+// load/store registers
 DEF_HELPER_2(trace_load_reg32, void, i32, i32)
 DEF_HELPER_2(trace_store_reg32, void, i32, i32)
-DEF_HELPER_3(trace_load_mem32, void, env, i32, i32)
-DEF_HELPER_3(trace_store_mem32, void, env, i32, i32)
+
+// load store memory operands
+DEF_HELPER_3(trace_load_mem, void, i32, i32, i32)
+DEF_HELPER_3(trace_store_mem, void, i32, i32, i32)
+DEF_HELPER_3(trace_load_mem_i64, void, i32, i64, i32)
+DEF_HELPER_3(trace_store_mem_i64, void, i32, i64, i32)
 #ifdef TARGET_MIPS64
+// load/store registers
 DEF_HELPER_2(trace_load_reg64, void, i32, i64)
 DEF_HELPER_2(trace_store_reg64, void, i32, i64)
-DEF_HELPER_2(trace_load_mem64, void, i32, i64)
-DEF_HELPER_2(trace_store_mem64, void, i32, i64)
+
+// load store memory operands
+DEF_HELPER_3(trace_load_mem64, void, i64, i64, i32)
+DEF_HELPER_3(trace_store_mem64, void, i64, i64, i32)
 #endif // TARGET_MIPS64
 #endif // HAS_TRACEWRAP
 

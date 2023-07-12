@@ -95,6 +95,7 @@ typedef enum {
 
 #include "fpu/softfloat-types.h"
 #include "fpu/softfloat-helpers.h"
+#include <stdbool.h>
 
 /*----------------------------------------------------------------------------
 | Routine to raise any or all of the software IEC/IEEE floating-point

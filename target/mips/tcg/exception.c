@@ -43,7 +43,7 @@ target_ulong exception_resume_pc(CPUMIPSState *env)
 }
 
 void helper_raise_exception_err(CPUMIPSState *env, uint32_t exception,
-                                int error_code)
+                                uint32_t error_code)
 {
     do_raise_exception_err(env, exception, error_code, 0);
 }
